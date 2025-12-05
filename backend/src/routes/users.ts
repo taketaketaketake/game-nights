@@ -1,4 +1,5 @@
 import express from 'express';
+import { body, validationResult } from 'express-validator';
 import { query } from '../config/db.js';
 import { authLimiter, strictLimiter, uploadLimiter } from '../middleware/rateLimiting.js';
 
@@ -63,29 +64,44 @@ router.get('/:id/stats', async (req, res) => {
 });
 
 // Create or update user (from Auth0 callback) - strict limit
-router.post('/', strictLimiter, async (req, res) => {
-  try {
-    const { auth0_id, username, email, avatar_url } = req.body;
+router.post(
+  '/',
+  strictLimiter,
+  [
+    body('auth0_id').isString().notEmpty().withMessage('Auth0 ID is required.'),
+    body('username').isString().notEmpty().withMessage('Username is required.').isLength({ max: 50 }).withMessage('Username cannot exceed 50 characters.'),
+    body('email').isEmail().withMessage('Email must be a valid email address.'),
+    body('avatar_url').isURL().withMessage('Avatar URL must be a valid URL.'),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-    const result = await query(
-      `INSERT INTO users (auth0_id, username, email, avatar_url)
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (auth0_id)
-       DO UPDATE SET
-         username = EXCLUDED.username,
-         avatar_url = EXCLUDED.avatar_url
-       RETURNING *`,
-      [auth0_id, username, email, avatar_url]
-    );
+    try {
+      const { auth0_id, username, email, avatar_url } = req.body;
 
-    res.status(201).json({
-      success: true,
-      data: result.rows[0]
-    });
-  } catch (error) {
-    console.error('Error creating/updating user:', error);
-    res.status(500).json({ error: 'Failed to create/update user' });
+      const result = await query(
+        `INSERT INTO users (auth0_id, username, email, avatar_url)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (auth0_id)
+         DO UPDATE SET
+           username = EXCLUDED.username,
+           avatar_url = EXCLUDED.avatar_url
+         RETURNING *`,
+        [auth0_id, username, email, avatar_url]
+      );
+
+      res.status(201).json({
+        success: true,
+        data: result.rows[0]
+      });
+    } catch (error) {
+      console.error('Error creating/updating user:', error);
+      res.status(500).json({ error: 'Failed to create/update user' });
+    }
   }
-});
+);
 
 export default router;

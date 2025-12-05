@@ -1,4 +1,5 @@
 import express from 'express';
+import { body, validationResult } from 'express-validator';
 import { query } from '../config/db.js';
 import { gameLimiter, strictLimiter } from '../middleware/rateLimiting.js';
 
@@ -61,28 +62,45 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new game (host only)
-router.post('/', strictLimiter, async (req, res) => {
-  try {
-    const { host_id, title, description, scheduled_time, stream_url, prize_pool } = req.body;
+router.post(
+  '/',
+  strictLimiter,
+  [
+    body('host_id').isInt({ min: 1 }).withMessage('Host ID must be a positive integer.'),
+    body('title').isString().notEmpty().withMessage('Title is required.').isLength({ max: 255 }).withMessage('Title cannot exceed 255 characters.'),
+    body('description').isString().notEmpty().withMessage('Description is required.'),
+    body('scheduled_time').isISO8601().withMessage('Scheduled time must be a valid ISO 8601 date.'),
+    body('stream_url').isURL().withMessage('Stream URL must be a valid URL.'),
+    body('prize_pool').isFloat({ min: 0 }).withMessage('Prize pool must be a non-negative number.'),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-    // TODO: Add authentication middleware to verify host
+    try {
+      const { host_id, title, description, scheduled_time, stream_url, prize_pool } = req.body;
 
-    const result = await query(
-      `INSERT INTO games (host_id, title, description, scheduled_time, stream_url, prize_pool, status)
-       VALUES ($1, $2, $3, $4, $5, $6, 'scheduled')
-       RETURNING *`,
-      [host_id, title, description, scheduled_time, stream_url, prize_pool || 0]
-    );
+      // TODO: Add authentication middleware to verify host
 
-    res.status(201).json({
-      success: true,
-      data: result.rows[0]
-    });
-  } catch (error) {
-    console.error('Error creating game:', error);
-    res.status(500).json({ error: 'Failed to create game' });
+      const result = await query(
+        `INSERT INTO games (host_id, title, description, scheduled_time, stream_url, prize_pool, status)
+         VALUES ($1, $2, $3, $4, $5, $6, 'scheduled')
+         RETURNING *`,
+        [host_id, title, description, scheduled_time, stream_url, prize_pool || 0]
+      );
+
+      res.status(201).json({
+        success: true,
+        data: result.rows[0]
+      });
+    } catch (error) {
+      console.error('Error creating game:', error);
+      res.status(500).json({ error: 'Failed to create game' });
+    }
   }
-});
+);
 
 // Update game status (host only)
 router.patch('/:id/status', gameLimiter, async (req, res) => {
