@@ -1,10 +1,69 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Cloudflare R2 client (S3-compatible)
-const r2Client = new S3Client({
+// Cloudflare R2 client using fetch API
+class R2Client {
+  constructor(config) {
+    this.endpoint = config.endpoint;
+    this.credentials = config.credentials;
+  }
+
+  async send(command) {
+    return command.execute(this.endpoint, this.credentials);
+  }
+}
+
+class PutObjectCommand {
+  constructor({ Bucket, Key, Body, ContentType }) {
+    this.bucket = Bucket;
+    this.key = Key;
+    this.body = Body;
+    this.contentType = ContentType;
+  }
+
+  async execute(endpoint, credentials) {
+    const url = `${endpoint}/${this.bucket}/${this.key}`;
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${credentials.secretAccessKey}`,
+        'Content-Type': this.contentType,
+      },
+      body: this.body,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
+    }
+    return response;
+  }
+}
+
+class DeleteObjectCommand {
+  constructor({ Bucket, Key }) {
+    this.bucket = Bucket;
+    this.key = Key;
+  }
+
+  async execute(endpoint, credentials) {
+    const url = `${endpoint}/${this.bucket}/${this.key}`;
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${credentials.secretAccessKey}`,
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Delete failed: ${response.statusText}`);
+    }
+    return response;
+  }
+}
+
+// Cloudflare R2 client
+const r2Client = new R2Client({
   region: 'auto',
   endpoint: process.env.R2_ENDPOINT,
   credentials: {

@@ -17,6 +17,9 @@ import leaderboardRouter from './routes/leaderboard.js';
 import { initializeGameSockets } from './sockets/gameRoom.js';
 import { initializeChatSockets } from './sockets/chat.js';
 
+// Import rate limiting middleware
+import { generalLimiter } from './middleware/rateLimiting.js';
+
 const app = express();
 const httpServer = createServer(app);
 
@@ -34,6 +37,10 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:4321',
   credentials: true
 }));
+
+// Rate limiting - apply to all requests
+app.use(generalLimiter);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

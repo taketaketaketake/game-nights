@@ -1,5 +1,6 @@
 import express from 'express';
 import { query } from '../config/db.js';
+import { gameLimiter, strictLimiter } from '../middleware/rateLimiting.js';
 
 const router = express.Router();
 
@@ -60,7 +61,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new game (host only)
-router.post('/', async (req, res) => {
+router.post('/', strictLimiter, async (req, res) => {
   try {
     const { host_id, title, description, scheduled_time, stream_url, prize_pool } = req.body;
 
@@ -84,7 +85,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update game status (host only)
-router.patch('/:id/status', async (req, res) => {
+router.patch('/:id/status', gameLimiter, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;

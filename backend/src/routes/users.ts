@@ -1,5 +1,6 @@
 import express from 'express';
 import { query } from '../config/db.js';
+import { authLimiter, strictLimiter, uploadLimiter } from '../middleware/rateLimiting.js';
 
 const router = express.Router();
 
@@ -61,8 +62,8 @@ router.get('/:id/stats', async (req, res) => {
   }
 });
 
-// Create or update user (from Auth0 callback)
-router.post('/', async (req, res) => {
+// Create or update user (from Auth0 callback) - strict limit
+router.post('/', strictLimiter, async (req, res) => {
   try {
     const { auth0_id, username, email, avatar_url } = req.body;
 
