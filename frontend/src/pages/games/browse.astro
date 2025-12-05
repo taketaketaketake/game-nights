@@ -1,0 +1,85 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+
+// TODO: Fetch from API
+const upcomingGames = [
+  {
+    id: '1',
+    title: 'Tuesday Night Trivia Showdown',
+    host: 'GameMaster Jake',
+    scheduledTime: '2024-01-09T20:00:00Z',
+    prizePool: 500,
+    thumbnail: '/images/game-1.jpg',
+    participants: 142
+  },
+  {
+    id: '2',
+    title: 'Draw-Off Championship',
+    host: 'ArtisticAmy',
+    scheduledTime: '2024-01-10T19:00:00Z',
+    prizePool: 250,
+    thumbnail: '/images/game-2.jpg',
+    participants: 89
+  }
+];
+---
+
+<Layout title="Browse Games">
+  <Header />
+
+  <main class="min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+      <h1 class="font-display text-4xl font-bold mb-8">Upcoming Game Nights</h1>
+
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-4 mb-8">
+        <button class="bg-primary-600 px-4 py-2 rounded-lg">All Games</button>
+        <button class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors">Trivia</button>
+        <button class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors">Drawing</button>
+        <button class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors">Physical</button>
+        <button class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors">Team</button>
+      </div>
+
+      <!-- Game Cards -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {upcomingGames.map(game => (
+          <div class="bg-gray-800 rounded-xl overflow-hidden hover:ring-2 ring-primary-500 transition-all">
+            <div class="aspect-video bg-gradient-to-br from-purple-600 to-pink-600"></div>
+            <div class="p-6">
+              <h3 class="font-display text-xl font-bold mb-2">{game.title}</h3>
+              <p class="text-gray-400 text-sm mb-4">Hosted by {game.host}</p>
+
+              <div class="flex items-center justify-between text-sm mb-4">
+                <span class="text-gray-400">
+                  🕐 {new Date(game.scheduledTime).toLocaleString()}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-2xl font-bold text-primary-400">${game.prizePool}</div>
+                  <div class="text-xs text-gray-400">Prize Pool</div>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold">{game.participants}</div>
+                  <div class="text-xs text-gray-400">Players</div>
+                </div>
+              </div>
+
+              <a
+                href={`/games/${game.id}`}
+                class="block w-full bg-primary-600 hover:bg-primary-700 text-center px-4 py-2 rounded-lg mt-4 font-semibold transition-colors"
+              >
+                View Details
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

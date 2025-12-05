@@ -1,0 +1,51 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-gray-800 bg-gray-900 mt-auto">
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-2xl">🎮</span>
+          <span class="font-display font-bold text-lg">Game Night Live</span>
+        </div>
+        <p class="text-gray-400 text-sm">
+          The ultimate platform for interactive game nights.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-3">For Players</h3>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="/games/browse" class="hover:text-white transition-colors">Browse Games</a></li>
+          <li><a href="/leaderboard" class="hover:text-white transition-colors">Leaderboard</a></li>
+          <li><a href="/how-to-play" class="hover:text-white transition-colors">How to Play</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-3">For Hosts</h3>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="/host" class="hover:text-white transition-colors">Become a Host</a></li>
+          <li><a href="/host/dashboard" class="hover:text-white transition-colors">Host Dashboard</a></li>
+          <li><a href="/host/guide" class="hover:text-white transition-colors">Host Guide</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-3">Company</h3>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="/about" class="hover:text-white transition-colors">About</a></li>
+          <li><a href="/contact" class="hover:text-white transition-colors">Contact</a></li>
+          <li><a href="/privacy" class="hover:text-white transition-colors">Privacy</a></li>
+          <li><a href="/terms" class="hover:text-white transition-colors">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
+      <p>&copy; {currentYear} Game Night Live. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

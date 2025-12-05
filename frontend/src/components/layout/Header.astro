@@ -1,0 +1,46 @@
+---
+const navItems = [
+  { href: '/games/browse', label: 'Browse Games' },
+  { href: '/host', label: 'Become a Host' },
+  { href: '/leaderboard', label: 'Leaderboard' },
+];
+---
+
+<header class="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm sticky top-0 z-50">
+  <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2">
+      <span class="text-3xl">🎮</span>
+      <span class="font-display text-xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
+        Game Night Live
+      </span>
+    </a>
+
+    <ul class="hidden md:flex items-center gap-6">
+      {navItems.map(item => (
+        <li>
+          <a
+            href={item.href}
+            class="text-gray-300 hover:text-white transition-colors"
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="flex items-center gap-3">
+      <a
+        href="/login"
+        class="text-gray-300 hover:text-white transition-colors"
+      >
+        Login
+      </a>
+      <a
+        href="/signup"
+        class="bg-primary-600 hover:bg-primary-700 px-4 py-2 rounded-lg font-medium transition-colors"
+      >
+        Sign Up
+      </a>
+    </div>
+  </nav>
+</header>

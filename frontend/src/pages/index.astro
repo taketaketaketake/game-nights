@@ -1,0 +1,143 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+---
+
+<Layout title="Home">
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="container mx-auto px-4 py-20 text-center">
+      <h1 class="font-display text-5xl md:text-7xl font-bold mb-6">
+        <span class="bg-gradient-to-r from-primary-400 via-secondary-400 to-primary-400 bg-clip-text text-transparent">
+          Game Nights
+        </span>
+        <br />
+        <span class="text-white">Are Fun</span>
+      </h1>
+
+      <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+        Join live interactive game shows where you compete in trivia, challenges,
+        and team competitions for real prizes.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/games/browse"
+          class="bg-primary-600 hover:bg-primary-700 px-8 py-4 rounded-lg font-semibold text-lg transition-colors"
+        >
+          Browse Games
+        </a>
+        <a
+          href="/host"
+          class="bg-gray-800 hover:bg-gray-700 px-8 py-4 rounded-lg font-semibold text-lg transition-colors"
+        >
+          Become a Host
+        </a>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="bg-gray-900/50 py-20">
+      <div class="container mx-auto px-4">
+        <h2 class="font-display text-4xl font-bold text-center mb-12">
+          How It Works
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-gray-800/50 p-8 rounded-xl">
+            <div class="text-4xl mb-4">📺</div>
+            <h3 class="font-display text-2xl font-bold mb-3">Watch Live</h3>
+            <p class="text-gray-300">
+              Hosts stream live game shows on their schedule.
+              Join the fun in real-time with other viewers.
+            </p>
+          </div>
+
+          <div class="bg-gray-800/50 p-8 rounded-xl">
+            <div class="text-4xl mb-4">🎮</div>
+            <h3 class="font-display text-2xl font-bold mb-3">Play Along</h3>
+            <p class="text-gray-300">
+              Use your phone as a controller. Answer trivia,
+              draw pictures, complete challenges, and more.
+            </p>
+          </div>
+
+          <div class="bg-gray-800/50 p-8 rounded-xl">
+            <div class="text-4xl mb-4">🏆</div>
+            <h3 class="font-display text-2xl font-bold mb-3">Win Prizes</h3>
+            <p class="text-gray-300">
+              Compete for top spots on the leaderboard.
+              Winners get real prizes from sponsors.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game Types Section -->
+    <section class="py-20">
+      <div class="container mx-auto px-4">
+        <h2 class="font-display text-4xl font-bold text-center mb-12">
+          Game Types
+        </h2>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-gradient-to-br from-purple-600 to-pink-600 p-6 rounded-xl">
+            <div class="text-3xl mb-3">🧠</div>
+            <h3 class="font-bold text-xl mb-2">Trivia</h3>
+            <p class="text-sm text-purple-100">
+              Test your knowledge in rapid-fire questions
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-br from-blue-600 to-cyan-600 p-6 rounded-xl">
+            <div class="text-3xl mb-3">🎨</div>
+            <h3 class="font-bold text-xl mb-2">Drawing</h3>
+            <p class="text-sm text-blue-100">
+              Sketch your way to victory in timed challenges
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-br from-green-600 to-emerald-600 p-6 rounded-xl">
+            <div class="text-3xl mb-3">🤝</div>
+            <h3 class="font-bold text-xl mb-2">Team Challenges</h3>
+            <p class="text-sm text-green-100">
+              Collaborate with others to solve puzzles
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-br from-orange-600 to-red-600 p-6 rounded-xl">
+            <div class="text-3xl mb-3">💪</div>
+            <h3 class="font-bold text-xl mb-2">Physical</h3>
+            <p class="text-sm text-orange-100">
+              Complete real-world challenges at home
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="bg-gradient-to-r from-primary-600 to-secondary-600 py-16">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="font-display text-4xl font-bold mb-4">
+          Ready to Play?
+        </h2>
+        <p class="text-xl mb-8 text-purple-100">
+          Join thousands of players competing in live game nights
+        </p>
+        <a
+          href="/signup"
+          class="bg-white text-primary-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-block"
+        >
+          Sign Up Free
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
