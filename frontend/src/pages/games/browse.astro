@@ -1,34 +1,47 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import Header from '@components/layout/Header.astro';
 import Footer from '@components/layout/Footer.astro';
 
-// TODO: Fetch from API
-const upcomingGames = [
-  {
-    id: '1',
-    title: 'Tuesday Night Trivia Showdown',
-    host: 'GameMaster Jake',
-    scheduledTime: '2024-01-09T20:00:00Z',
-    prizePool: 500,
-    thumbnail: '/images/game-1.jpg',
-    participants: 142
-  },
-  {
-    id: '2',
-    title: 'Draw-Off Championship',
-    host: 'ArtisticAmy',
-    scheduledTime: '2024-01-10T19:00:00Z',
-    prizePool: 250,
-    thumbnail: '/images/game-2.jpg',
-    participants: 89
+// Fetch games from the backend API
+let upcomingGames = [];
+try {
+  const response = await fetch('http://localhost:3000/api/games');
+  if (response.ok) {
+    const { data } = await response.json();
+    upcomingGames = data;
+  } else {
+    console.error('Failed to fetch games:', response.status, await response.text());
   }
-];
+} catch (error) {
+  console.error('Error fetching games:', error);
+}
+
+// Fallback to mock data if API fails
+if (upcomingGames.length === 0) {
+  upcomingGames = [
+    {
+      id: '1',
+      title: 'API Down: Trivia Showdown',
+      host_username: 'GameMaster Jake',
+      scheduled_time: '2024-01-09T20:00:00Z',
+      prize_pool: 500,
+      thumbnail: '/images/Kids 34 SSource 4.png',
+      participant_count: 142
+    },
+    {
+      id: '2',
+      title: 'API Down: Draw-Off Championship',
+      host_username: 'ArtisticAmy',
+      scheduled_time: '2024-01-10T19:00:00Z',
+      prize_pool: 250,
+      thumbnail: '/images/Kids 35 SSource 2.png',
+      participant_count: 89
+    }
+  ];
+}
 ---
 
 <Layout title="Browse Games">
-  <Header />
-
   <main class="min-h-screen">
     <div class="container mx-auto px-4 py-12">
       <h1 class="font-display text-4xl font-bold mb-8">Upcoming Game Nights</h1>
@@ -46,24 +59,26 @@ const upcomingGames = [
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {upcomingGames.map(game => (
           <div class="bg-gray-800 rounded-xl overflow-hidden hover:ring-2 ring-primary-500 transition-all">
-            <div class="aspect-video bg-gradient-to-br from-purple-600 to-pink-600"></div>
+            <div class="aspect-video bg-gray-700">
+              <img src={game.thumbnail || '/images/Kids 34 SSource 4.png'} alt={game.title} class="w-full h-full object-cover" />
+            </div>
             <div class="p-6">
               <h3 class="font-display text-xl font-bold mb-2">{game.title}</h3>
-              <p class="text-gray-400 text-sm mb-4">Hosted by {game.host}</p>
+              <p class="text-gray-400 text-sm mb-4">Hosted by {game.host_username}</p>
 
               <div class="flex items-center justify-between text-sm mb-4">
                 <span class="text-gray-400">
-                  🕐 {new Date(game.scheduledTime).toLocaleString()}
+                  🕐 {new Date(game.scheduled_time).toLocaleString()}
                 </span>
               </div>
 
               <div class="flex items-center justify-between">
                 <div>
-                  <div class="text-2xl font-bold text-primary-400">${game.prizePool}</div>
+                  <div class="text-2xl font-bold text-primary-400">${game.prize_pool}</div>
                   <div class="text-xs text-gray-400">Prize Pool</div>
                 </div>
                 <div>
-                  <div class="text-2xl font-bold">{game.participants}</div>
+                  <div class="text-2xl font-bold">{game.participant_count}</div>
                   <div class="text-xs text-gray-400">Players</div>
                 </div>
               </div>

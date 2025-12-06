@@ -1,15 +1,9 @@
 import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
-import tailwind from '@astrojs/tailwind';
+import tailwind from "@astrojs/tailwind";
+import react from "@astrojs/react";
 
+// https://astro.build/config
 export default defineConfig({
-  integrations: [
-    react(),
-    tailwind()
-  ],
-  output: 'hybrid', // Allows mix of static and server-rendered pages
-  server: {
-    port: 4321,
-    host: true
-  }
+  output: 'server',
+  integrations: [tailwind(), react()]
 });

@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
        LEFT JOIN game_sessions gs ON gs.game_id = g.id
        LEFT JOIN scores s ON s.session_id = gs.id
        WHERE g.status = $1
-       GROUP BY g.id, u.username, u.avatar_url
+       GROUP BY g.id, g.host_id, g.title, g.description, g.scheduled_time, g.stream_url, g.stream_platform, g.status, g.prize_pool, g.max_participants, g.created_at, g.updated_at, u.username, u.avatar_url
        ORDER BY g.scheduled_time ASC
        LIMIT $2 OFFSET $3`,
       [status, limit, offset]

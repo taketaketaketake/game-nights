@@ -1,0 +1,125 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+
+const { slug } = Astro.params;
+
+let fetchedGame = null;
+try {
+  const response = await fetch(`http://localhost:3000/api/games/${slug}`);
+  if (response.ok) {
+    const { data } = await response.json();
+    fetchedGame = data;
+  } else {
+    console.error('Failed to fetch game:', response.status, await response.text());
+  }
+} catch (error) {
+  console.error('Error fetching game:', error);
+}
+
+// Fallback to mock data if fetched data is not available
+const game = fetchedGame || {
+  title: "Trivia Extravaganza",
+  description: "Test your knowledge in a fast-paced trivia game show! Covering topics from history to pop culture, there's a question for everyone. Compete against other players in real-time and climb the leaderboard to win amazing prizes.",
+  host: {
+    name: "Alex Ray",
+    avatar_url: "https://i.pravatar.cc/150?u=alexray",
+  },
+  prize_pool: 1000,
+  scheduled_time: new Date(Date.now() + 1000 * 60 * 60 * 2), // 2 hours from now
+  participants: [
+    { id: 1, name: "Charlie", avatar_url: "https://i.pravatar.cc/150?u=charlie" },
+    { id: 2, name: "Diana", avatar_url: "https://i.pravatar.cc/150?u=diana" },
+    { id: 3, name: "Eve", avatar_url: "https://i.pravatar.cc/150?u=eve" },
+    { id: 4, name: "Frank", avatar_url: "https://i.pravatar.cc/150?u=frank" },
+    { id: 5, name: "Grace", avatar_url: "https://i.pravatar.cc/150?u=grace" },
+  ],
+  stream_url: "https://www.youtube.com/embed/live_stream?channel=UCv_vL2_v2_vL2_v2"
+};
+
+---
+
+<Layout title={`Game: ${game.title}`}>
+  <main class="container mx-auto px-4 py-12">
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Left Column: Game Info -->
+      <div class="lg:col-span-2">
+        <div class="bg-gray-800/50 rounded-xl overflow-hidden mb-6">
+          <div class="aspect-w-1 aspect-h-1">
+            <!-- Replace with actual video embed -->
+             <iframe src={game.stream_url} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full"></iframe>
+          </div>
+        </div>
+
+        <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">{game.title}</h1>
+
+        <div class="flex items-center gap-4 mb-6">
+          <img src={game.host.avatar_url} alt={game.host.name} class="w-12 h-12 rounded-full border-2 border-primary-500" />
+          <div>
+            <p class="text-gray-400 text-sm">Hosted by</p>
+            <p class="font-semibold text-lg">{game.host.name}</p>
+          </div>
+        </div>
+
+        <div class="prose prose-invert max-w-none text-gray-300">
+          <p>{game.description}</p>
+        </div>
+      </div>
+
+      <!-- Right Column: Actions & Details -->
+      <div class="lg:col-span-1">
+        <div class="bg-gray-800/50 p-6 rounded-xl sticky top-24">
+          <div class="mb-6 text-center">
+             <p class="font-display text-3xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">${game.prize_pool}</p>
+             <p class="text-gray-400 text-sm">Prize Pool</p>
+          </div>
+
+          <a href="#" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg text-center block transition-colors mb-6 text-xl">
+            Join Game
+          </a>
+
+          <div class="text-center mb-6">
+            <p class="text-gray-400 mb-2">Starts In</p>
+            <div id="countdown" class="font-mono text-2xl" data-scheduled-time={game.scheduled_time.toISOString()}>
+              --:--:--
+            </div>
+          </div>
+
+          <h3 class="font-bold text-lg mb-4">Participants ({game.participants.length})</h3>
+          <div class="flex flex-wrap gap-2">
+            {game.participants.map(p => (
+              <a href={`/user/${p.id}`} class="block" title={p.name}>
+                <img src={p.avatar_url} alt={p.name} class="w-10 h-10 rounded-full border-2 border-gray-600 hover:border-primary-500 transition" />
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const countdownElement = document.getElementById('countdown');
+  const scheduledTime = new Date(countdownElement.dataset.scheduledTime);
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = scheduledTime.getTime() - now.getTime();
+
+    if (diff <= 0) {
+      countdownElement.textContent = "Live Now!";
+      return;
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    countdownElement.textContent =
+      `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+</script>
+

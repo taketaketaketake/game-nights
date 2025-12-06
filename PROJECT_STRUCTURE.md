@@ -22,7 +22,6 @@ gamenightlive/
 │   ├── .env.example                  # Environment variables template
 │   │
 │   ├── public/                       # Static assets
-│   │   ├── fonts/
 │   │   └── images/
 │   │
 │   └── src/
@@ -32,21 +31,18 @@ gamenightlive/
 │       ├── pages/                    # Astro pages (routes)
 │       │   ├── index.astro           # Landing page
 │       │   ├── games/
-│       │   │   └── browse.astro      # Browse games page
-│       │   ├── play/                 # Game session pages
-│       │   ├── profile/              # User profile pages
-│       │   └── api/                  # API routes (if needed)
+│       │   │   ├── browse.astro      # Browse games page
+│       │   │   └── [slug]/
+│       │   │       └── index.astro   # Dynamic game details page
 │       │
 │       ├── components/
 │       │   ├── layout/               # Layout components
 │       │   │   ├── Header.astro      # Site header
 │       │   │   └── Footer.astro      # Site footer
 │       │   │
-│       │   ├── game/                 # Game components (React)
-│       │   │   ├── GamePlayer.tsx    # Interactive game player
-│       │   │   └── Leaderboard.tsx   # Real-time leaderboard
-│       │   │
-│       │   └── ui/                   # UI components
+│       │   └── game/                 # Game components (React)
+│       │       ├── GamePlayer.tsx    # Interactive game player
+│       │       └── Leaderboard.tsx   # Real-time leaderboard
 │       │
 │       └── lib/
 │           └── socket.ts             # Socket.io client utilities
@@ -60,27 +56,23 @@ gamenightlive/
     │   ├── migrate.js                 # Migration script
     │   └── seed.js                    # Sample data seeding
     │
-    ├── uploads/                       # Local file uploads (dev only)
-    │
     └── src/
-        ├── server.js                  # Main server entry point
+        ├── server.ts                  # Main server entry point
         │
         ├── config/
-        │   └── db.js                  # Database connection config
+        │   └── db.ts                  # Database connection config
         │
         ├── routes/                    # REST API routes
-        │   ├── games.js               # Game CRUD endpoints
-        │   ├── users.js               # User management endpoints
-        │   └── leaderboard.js         # Leaderboard endpoints
+        │   ├── games.ts               # Game CRUD endpoints
+        │   ├── users.ts               # User management endpoints
+        │   └── leaderboard.ts         # Leaderboard endpoints
         │
         ├── sockets/                   # Socket.io handlers
         │   ├── gameRoom.js            # Game session logic
         │   └── chat.js                # Chat functionality
         │
         ├── middleware/                # Express middleware
-        │   └── auth.js                # Auth0 authentication (TODO)
-        │
-        ├── models/                    # Data models (if needed)
+        │   └── rateLimiting.ts        # Rate limiting middleware
         │
         └── utils/
             └── storage.js             # Cloudflare R2 utilities
@@ -92,12 +84,16 @@ gamenightlive/
 
 **`astro.config.mjs`**
 - Configures Astro with React and Tailwind integrations
-- Sets up hybrid rendering mode
+- Sets up server-side rendering (`output: 'server'`)
 
 **`src/pages/index.astro`**
 - Landing page with hero section
 - Feature showcase
 - Game types overview
+
+**`src/pages/games/[slug]/index.astro`**
+- Dynamic game details page
+- Fetches game data from the backend API on the server
 
 **`src/components/game/GamePlayer.tsx`**
 - React component for interactive gameplay
@@ -111,13 +107,13 @@ gamenightlive/
 
 ### Backend
 
-**`src/server.js`**
+**`src/server.ts`**
 - Express server setup
 - Socket.io configuration
 - API routes registration
 - Redis adapter (optional, for scaling)
 
-**`src/routes/games.js`**
+**`src/routes/games.ts`**
 - GET /api/games - List games
 - GET /api/games/:id - Get game details
 - POST /api/games - Create game (host)
@@ -156,7 +152,7 @@ gamenightlive/
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| Frontend Framework | Astro | Fast static site generation |
+| Frontend Framework | Astro | Server-side rendering |
 | Interactive UI | React | Game components |
 | Styling | Tailwind CSS | Utility-first CSS |
 | Backend Runtime | Node.js | JavaScript runtime |
@@ -165,14 +161,14 @@ gamenightlive/
 | Database | PostgreSQL | Relational data storage |
 | Authentication | Auth0 | User authentication |
 | File Storage | Cloudflare R2 | Images, videos |
-| Hosting (Frontend) | Cloudflare Pages | Static site hosting |
+| Hosting (Frontend) | Cloudflare Pages / Railway | Server hosting |
 | Hosting (Backend) | Railway/Render | Server hosting |
 
 ## File Count
 
-- **31 files created**
-- **Frontend**: 10 files
-- **Backend**: 9 files
+- **~30 files created**
+- **Frontend**: ~12 files
+- **Backend**: ~10 files
 - **Database**: 3 files
 - **Documentation**: 4 files
 - **Configuration**: 5 files
